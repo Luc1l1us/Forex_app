@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     throw Exception(err);
                   }
                 },
-                child: Text('Register'))
+                child: Text('Registersss'))
           ],
         ),
       ),

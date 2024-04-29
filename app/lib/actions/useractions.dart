@@ -8,8 +8,9 @@ Future<void> register(String username, password, email) async {
     'password': password,
     'email': email,
   };
+  //TODO error here
   final response = await http.post(
-    Uri.http(dotenv.env['djangoIP']!, 'registeruser'),
+    Uri.http('localhost:5000', '/register'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

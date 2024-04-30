@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<void> register(String username, password, email) async {
+Future<void> register(String password, email) async {
   final Map<String, dynamic> postData = {
-    'username': username,
     'password': password,
     'email': email,
   };

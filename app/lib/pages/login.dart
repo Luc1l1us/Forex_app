@@ -1,11 +1,20 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../actions/useractions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase_options.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'register.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
@@ -36,55 +45,72 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _username = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
       body: Center(
-        child: Column(
+        child: Container(
+          padding: EdgeInsets.all(100),
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextFormField(
-              controller: _username,
               decoration: InputDecoration(
-                labelText: 'Enter your username',
-              ),
-            ),
-            TextFormField(
-              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: 'Enter your email',
               ),
               controller: _email,
             ),
+            SizedBox(height: 10),
             TextFormField(
               decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: 'Enter your password',
               ),
               controller: _password,
             ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            SizedBox(height: 30),
+            Text("or"),
             SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                //logic here
+              },
+              icon: FaIcon(FontAwesomeIcons.google), 
+              label: Text('Sign in with Google'
+            )),
+            SizedBox(height: 30),
+            RichText(text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "Not yet Registered?  "
+                ),
+                TextSpan(
+                  text: "Register",
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()..onTap = () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
+                  }
+                )
+              ]
+            )),
+            SizedBox(height: 50),
             TextButton(
                 onPressed: () {
                   try {
-                    register(_username.text, _email.text, _password.text);
+                    register(_email.text, _password.text);
                   } catch (err) {
                     throw Exception(err);
                   }
                 },
-                child: Text('Registersss'))
+                child: Text('Sign In'))
           ],
         ),
       ),
+    )
     );
   }
 }

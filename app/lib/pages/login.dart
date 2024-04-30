@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
                 onPressed: () {
                   try {
-                    register(_email.text, _password.text);
+                    register(_password.text, _email.text, context);
                   } catch (err) {
                     throw Exception(err);
                   }

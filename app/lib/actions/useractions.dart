@@ -5,8 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sample_app/model/therapistmodel.dart';
 import 'package:sample_app/pages/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sample_app/pages/login.dart';
+import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:provider/provider.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
 
@@ -18,7 +22,7 @@ Future<void> register(String password, email, BuildContext context) async {
       password: password.trim()
     );
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(context as BuildContext, MaterialPageRoute(builder: (context) => const home()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHomePage(title: 'login')));
     });
   } on FirebaseAuthMultiFactorException catch (e) {
     if (e.code == 'weak-password') {
@@ -36,7 +40,7 @@ Future<void> register(String password, email, BuildContext context) async {
     );
   } catch (err) {
       Fluttertoast.showToast(
-      msg: "Failed: $e",
+      msg: "Failed: $err",
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.SNACKBAR,
       backgroundColor: Colors.black54,
@@ -46,24 +50,72 @@ Future<void> register(String password, email, BuildContext context) async {
   }
 }
 
-Future<void> login(String email, password) async {
-    final Map<String, dynamic> postData = {
-    'password': password,
-    'email': email,
-  };
-  //TODO error here
-  final response = await http.post(
-    Uri.http('localhost:5000', '/register'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(postData),
-  );
+Future<void> login(String password, email, BuildContext context) async {
+  String message = '';
   try {
-    if (response.statusCode == 201) {
-      print('Data posted successfuly!');
+    await _firebaseAuth.signInWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim()
+    );
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHome()));
+    });
+  } on FirebaseAuthMultiFactorException catch (e) {
+    if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+      message = 'Invalid login credentials.';
+    } else {
+      message = e.code;
     }
-  } catch (err) {
-    throw Exception(err);
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 14.0,
+    );
   }
+}
+
+Future<AlertDialog> addtherapist(BuildContext context)  async {
+  TextEditingController _name = TextEditingController();
+  TextEditingController _occupation = TextEditingController();
+
+  return AlertDialog(
+    title: Text('Add Therapist/Employee'),
+    content: 
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Add a therapist or Employee for employment purposes.'),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: _name,
+            decoration: InputDecoration(
+              labelText: 'Name',
+            ),
+          ),
+          TextFormField(
+            controller: _occupation,
+            decoration: InputDecoration(
+              labelText: 'Occupation',
+            ),
+          )
+          ]),
+    actions: <Widget>[
+      TextButton(
+        onPressed: () {
+          Provider.of<TherepistProvider>(context, listen: false).add(_name.text, _occupation.text);
+          Navigator.of(context).pop();          
+        }, 
+        child: Text('Add')
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        }, 
+        child: Text('Cancel')
+      ),
+    ],
+  );
 }

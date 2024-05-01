@@ -5,11 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../actions/useractions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase_options.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'register.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 void main() async {
   await Firebase.initializeApp(
@@ -101,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
                 onPressed: () {
                   try {
-                    register(_password.text, _email.text, context);
+                    login(_password.text, _email.text, context);
                   } catch (err) {
                     throw Exception(err);
                   }

@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '393714456114',
     projectId: 'gen-lang-client-0909444084',
     authDomain: 'gen-lang-client-0909444084.firebaseapp.com',
+    databaseURL: 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com',
     storageBucket: 'gen-lang-client-0909444084.appspot.com',
     measurementId: 'G-LYEYXSCLWK',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:393714456114:android:26a6cff2e18324ca038e2b',
     messagingSenderId: '393714456114',
     projectId: 'gen-lang-client-0909444084',
+    databaseURL: 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com',
     storageBucket: 'gen-lang-client-0909444084.appspot.com',
   );
 
@@ -63,7 +65,9 @@ class DefaultFirebaseOptions {
     appId: '1:393714456114:ios:d1e1a769b4a188ca038e2b',
     messagingSenderId: '393714456114',
     projectId: 'gen-lang-client-0909444084',
+    databaseURL: 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com',
     storageBucket: 'gen-lang-client-0909444084.appspot.com',
+    iosClientId: '393714456114-i1aekl67o85qbiak525hhdt4t9gn5vom.apps.googleusercontent.com',
     iosBundleId: 'com.example.sampleApp',
   );
 
@@ -72,7 +76,9 @@ class DefaultFirebaseOptions {
     appId: '1:393714456114:ios:d1e1a769b4a188ca038e2b',
     messagingSenderId: '393714456114',
     projectId: 'gen-lang-client-0909444084',
+    databaseURL: 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com',
     storageBucket: 'gen-lang-client-0909444084.appspot.com',
+    iosClientId: '393714456114-i1aekl67o85qbiak525hhdt4t9gn5vom.apps.googleusercontent.com',
     iosBundleId: 'com.example.sampleApp',
   );
 
@@ -82,7 +88,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '393714456114',
     projectId: 'gen-lang-client-0909444084',
     authDomain: 'gen-lang-client-0909444084.firebaseapp.com',
+    databaseURL: 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com',
     storageBucket: 'gen-lang-client-0909444084.appspot.com',
     measurementId: 'G-GJ04BQKB93',
   );
+
 }

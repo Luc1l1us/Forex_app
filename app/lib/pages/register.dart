@@ -119,7 +119,6 @@ class _registerpage extends State<register_page> {
               label: Text('Sign in with Google'
             )),
             SizedBox(height: 30),
-            SizedBox(height: 50),
             TextButton(
                 onPressed: () {
                   _form.currentState?.validate();

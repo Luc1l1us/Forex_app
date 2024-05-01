@@ -2,4 +2,4 @@
 
 cd flask
 .venv\Scripts\activate
-python server.py
+python app.py

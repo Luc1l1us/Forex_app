@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:sample_app/actions/therapist_provider.dart';
 import '../actions/useractions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase_options.dart';
@@ -12,7 +14,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
+    child: const MaterialApp(
+      home: MyApp(),
+    ),
+  ));
+}
+
+bool _passwordVisible = false;
+
+@override
+  void initState() {
+    _passwordVisible = false;
 }
 
 class MyApp extends StatelessWidget {
@@ -53,6 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text('Login'),
+            SizedBox(height: 30),
             TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -62,11 +77,31 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 10),
             TextFormField(
+              keyboardType: TextInputType.text,
+              controller: _password,
+              obscureText: !_passwordVisible,
+              validator: (val) {
+                if (val!.isEmpty) {
+                  return 'Empty';
+                }
+                return null;
+              },
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Enter your password',
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                )
               ),
-              controller: _password,
             ),
             SizedBox(height: 30),
             Text("or"),

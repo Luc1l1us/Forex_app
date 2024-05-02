@@ -22,7 +22,7 @@ Future<void> register(String password, email, BuildContext context) async {
       password: password.trim()
     );
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHomePage(title: 'login')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
     });
   } on FirebaseAuthMultiFactorException catch (e) {
     if (e.code == 'weak-password') {
@@ -77,7 +77,7 @@ Future<void> login(String password, email, BuildContext context) async {
   }
 }
 
-Future<AlertDialog> addtherapist(BuildContext context)  async {
+AlertDialog addtherapist(BuildContext context) {
   TextEditingController _name = TextEditingController();
   TextEditingController _occupation = TextEditingController();
 
@@ -109,6 +109,59 @@ Future<AlertDialog> addtherapist(BuildContext context)  async {
           Navigator.of(context).pop();          
         }, 
         child: Text('Add')
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        }, 
+        child: Text('Cancel')
+      ),
+    ],
+  );
+}
+
+Future<void> deleteTherapist(String therapistID, BuildContext context) async {
+  try {
+    final url = 'http://127.0.0.1:5000/therapists/$therapistID';
+    final response = await http.delete(Uri.parse(url));
+  } catch (err) {
+    print(err);
+  }
+  Provider.of<TherepistProvider>(context, listen: false).getTherapists;
+}
+
+AlertDialog updateTherapist(BuildContext context, String therapistID) {
+  TextEditingController _name = TextEditingController();
+  TextEditingController _occupation = TextEditingController();
+
+  return AlertDialog(
+    title: Text('Update Therapist details'),
+    content: 
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Update the therapist\'s details.'),
+          SizedBox(height: 30),
+          TextFormField(
+            controller: _name,
+            decoration: InputDecoration(
+              labelText: 'Name',
+            ),
+          ),
+          TextFormField(
+            controller: _occupation,
+            decoration: InputDecoration(
+              labelText: 'Occupation',
+            ),
+          )
+          ]),
+    actions: <Widget>[
+      TextButton(
+        onPressed: () {
+          Provider.of<TherepistProvider>(context, listen: false).update(therapistID, _name.text, _occupation.text);
+          Navigator.of(context).pop();          
+        }, 
+        child: Text('Update')
       ),
       TextButton(
         onPressed: () {

@@ -1,14 +1,16 @@
+import firebase_admin
+from firebase_admin import credentials, db, initialize_app
 from flask import Flask, request, jsonify
 from firebase import firebase
 from flask_cors import CORS
-from firebase_admin import credentials, initialize_app, db
 
 app = Flask(__name__)
 CORS(app)
 firebase = firebase.FirebaseApplication('https://gen-lang-client-0909444084-default-rtdb.firebaseio.com', None)
-#cred = credentials.Certificate('AIzaSyA1kZCh77GgPdJfjSmE-ZuKjddmebWKvzE')
-default_app = firebase_admin.initialize_app()
-#firebaseadmin = initialize_app(cred, {'databaseURL': 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com'})
+cred = credentials.Certificate("D:\Downloads\gen-lang-client-0909444084-firebase-adminsdk-2nfej-61b29242e5.json")
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://gen-lang-client-0909444084-default-rtdb.firebaseio.com'
+})
 #firebase = FirebaseAdmin(app)
 
 @app.route("/")
@@ -45,8 +47,33 @@ def add_therapist():
 
 @app.route('/gettherapists', methods=['GET'])
 def get_therapists():
-    alltherapists = firebase.get('/therapists', None)
-    return jsonify(alltherapists), 200
+    therapist_ref = db.reference('therapists')
+    therapists = therapist_ref.get()
+    return jsonify(therapists)
+    #alltherapists = firebase.get('/therapists', None)
+    #return jsonify(alltherapists), 200
+
+@app.route('/therapists/<therapist_id>', methods=['DELETE'])
+def del_therapist(therapist_id):
+    therapist_ref = db.reference('therapists')
+    therapist_ref.child(therapist_id).delete()
+    return '', 204
+
+@app.route('/update/<therapist_id>', methods=['PUT'])
+def update_therapist(therapist_id):
+    try:
+        data = request.json
+        updated_name = data.get('name')
+        updated_occ = data.get('occupation')
+
+        therapist_ref = db.reference('therapists')
+        therapist_ref.child(therapist_id).update({
+            'name': updated_name,
+            'occupation': updated_occ,
+        })
+        return jsonify({'message': 'Therapist updated successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

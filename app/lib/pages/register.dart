@@ -36,6 +36,8 @@ class _registerpage extends State<register_page> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text('Registration'),
+            SizedBox(height: 30),
             TextFormField(
               controller: _email,
               decoration: InputDecoration(

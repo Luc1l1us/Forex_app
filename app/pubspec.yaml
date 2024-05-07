@@ -44,6 +44,7 @@ dependencies:
   font_awesome_flutter: 9.2.0 
   fluttertoast: ^8.2.5
   provider: ^6.1.2
+  jitsi_meet_flutter_sdk: ^0.4.2
 
 dev_dependencies:
   flutter_test:

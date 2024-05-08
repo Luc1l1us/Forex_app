@@ -80,6 +80,9 @@ Future<void> login(String password, email, BuildContext context) async {
 AlertDialog addtherapist(BuildContext context) {
   TextEditingController _name = TextEditingController();
   TextEditingController _occupation = TextEditingController();
+  TextEditingController _contact = TextEditingController();
+  TextEditingController _department = TextEditingController();
+
 
   return AlertDialog(
     title: Text('Add Therapist/Employee'),
@@ -100,12 +103,24 @@ AlertDialog addtherapist(BuildContext context) {
             decoration: InputDecoration(
               labelText: 'Occupation',
             ),
+          ),
+          TextFormField(
+            controller: _contact,
+            decoration: InputDecoration(
+              labelText: 'Contact Information',
+            ),
+          ),
+          TextFormField(
+            controller: _department,
+            decoration: InputDecoration(
+              labelText: 'Department',
+            ),
           )
           ]),
     actions: <Widget>[
       TextButton(
         onPressed: () {
-          Provider.of<TherepistProvider>(context, listen: false).add(_name.text, _occupation.text);
+          Provider.of<TherepistProvider>(context, listen: false).add(_name.text, _occupation.text, _contact.text, _department.text);
           Navigator.of(context).pop();          
         }, 
         child: Text('Add')
@@ -133,6 +148,9 @@ Future<void> deleteTherapist(String therapistID, BuildContext context) async {
 AlertDialog updateTherapist(BuildContext context, String therapistID) {
   TextEditingController _name = TextEditingController();
   TextEditingController _occupation = TextEditingController();
+  TextEditingController _contact = TextEditingController();
+  TextEditingController _department = TextEditingController();
+
 
   return AlertDialog(
     title: Text('Update Therapist details'),
@@ -153,12 +171,24 @@ AlertDialog updateTherapist(BuildContext context, String therapistID) {
             decoration: InputDecoration(
               labelText: 'Occupation',
             ),
+          ),
+          TextFormField(
+            controller: _contact,
+            decoration: InputDecoration(
+              labelText: 'Contact Information',
+            ),
+          ),
+          TextFormField(
+            controller: _department,
+            decoration: InputDecoration(
+              labelText: 'Department',
+            ),
           )
           ]),
     actions: <Widget>[
       TextButton(
         onPressed: () {
-          Provider.of<TherepistProvider>(context, listen: false).update(therapistID, _name.text, _occupation.text);
+          Provider.of<TherepistProvider>(context, listen: false).update(therapistID, _name.text, _occupation.text, _contact.text, _department.text);
           Navigator.of(context).pop();          
         }, 
         child: Text('Update')

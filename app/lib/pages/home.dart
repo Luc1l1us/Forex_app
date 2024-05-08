@@ -1,5 +1,4 @@
-import 'dart:js';
-
+//import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +75,7 @@ class _homeState extends State<_home> {
             Consumer<TherepistProvider>(
               child: Center(
                 heightFactor: MediaQuery.of(context).size.height * 0.03,
-                child: const Text('You have no tasks.', style: TextStyle(fontSize: 18),),
+                child: const Text('You have no employees.', style: TextStyle(fontSize: 18),),
               ),
               builder: ((context, TherepistProvider, child) => TherepistProvider.items.isEmpty
               ? child as Widget

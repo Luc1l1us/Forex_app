@@ -12,11 +12,13 @@ class TherepistProvider with ChangeNotifier {
     return [..._therapist];
   }
 
-  Future<void> add(String name, occupation) async {
+  Future<void> add(String name, occupation, contact, department) async {
     //final url = 'http://127.0.0.1:5000'; //TODO make this in an .ENV FILE
     Map<String, dynamic> request = {
       "name": name,
       "occupation": occupation,
+      "contact": contact,
+      "department": department,
     };
     final headers = {
       'Content-Type': 'application/json'
@@ -34,13 +36,16 @@ class TherepistProvider with ChangeNotifier {
     notifyListeners();
   }
   
-  Future<void> update(String therapistId, String newName, String newOccupation) async {
+  Future<void> update(String therapistId, String newName, newOccupation, newContact, newDepartment) async {
       final url = 'http://127.0.0.1:5000/update/$therapistId';
       final headers = {'Content-Type': 'application/json'};
       final updatedTherapistMap =  {
           'id': therapistId,
           'name': newName,
           'occupation': newOccupation,
+          "contact": newContact,
+          "department": newDepartment,
+
         };
       /* final request = {
         'name': newName,
@@ -83,7 +88,9 @@ class TherepistProvider with ChangeNotifier {
     .map((e) => {
       "id": e.key,
       "name": e.value['name'] ?? '',
-      "occupation": e.value['occupation'] ?? ''
+      "occupation": e.value['occupation'] ?? '',
+      "contact": e.value['contact'] ?? '',
+      "department": e.value['department'] ?? ''
     })
     .toList();
   }

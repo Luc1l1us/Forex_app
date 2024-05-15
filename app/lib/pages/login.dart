@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/pages/cookies.dart';
+import 'package:sample_app/pages/privacy_policy.dart';
 import '../actions/useractions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase_options.dart';
@@ -200,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         text: "Privacy Policy",
                         style: TextStyle(color:Color.fromRGBO(79, 200, 127, 1)),
                         recognizer: TapGestureRecognizer()..onTap = () async {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const _privacypolicy()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const privacy_policy()));
                         }
                       )
                     ]

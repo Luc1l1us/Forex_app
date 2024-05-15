@@ -70,11 +70,14 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets\images\privacy.png
+    - assets\images\cookies.png
   fonts:
   - family: Lexend
     fonts:
       - asset: fonts\Lexend-Regular.ttf
       - asset: fonts\Lexend-Thin.ttf
+  
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

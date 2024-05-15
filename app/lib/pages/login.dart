@@ -59,18 +59,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              icon: Icon(Icons.arrow_back)
+            ),
+        ],
+      ),
       body: Center(
         child: Container(
           padding: EdgeInsets.all(100),
           child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Login'),
+            Text('Let\'s get you in!', 
+            textScaler: TextScaler.linear(5),
+            style: TextStyle(fontFamily: 'Lexend'),
+            textAlign: TextAlign.justify,
+            ),            
             SizedBox(height: 30),
             TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Enter your email',
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email)
               ),
               controller: _email,
             ),
@@ -89,10 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: 'Password',
                 hintText: 'Enter your password',
+                prefixIcon: Icon(Icons.lock),
                 suffixIcon: IconButton(
                     icon: Icon(
                       _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
+                      color: Color.fromRGBO(79, 200, 127, 1),
                     ),
                     onPressed: () {
                       setState(() {
@@ -103,9 +119,44 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             SizedBox(height: 30),
-            Text("or"),
+            RichText(
+              textAlign: TextAlign.justify,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Forgot Password?",
+                    style: 
+                      TextStyle(color:Color.fromRGBO(79, 200, 127, 1),
+                      ),
+                    recognizer: TapGestureRecognizer()..onTap = () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
+                    }
+                  )
+                ]
+            )),
+            SizedBox(height: 30),
+            Row(
+              children: [
+                Expanded(
+                  child: Divider()
+                  ),
+                Text('or'),
+                Expanded(
+                  child: Divider()
+                  ),
+              ]
+            ),
             SizedBox(height: 20),
             ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                foregroundColor: Colors.black,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily:'Lexend',
+                )
+              ),
               onPressed: () {
                 //logic here
               },
@@ -113,30 +164,70 @@ class _MyHomePageState extends State<MyHomePage> {
               label: Text('Sign in with Google'
             )),
             SizedBox(height: 30),
-            RichText(text: TextSpan(
+            /*RichText(text: TextSpan(
               children: [
                 TextSpan(
                   text: "Not yet Registered?  "
                 ),
                 TextSpan(
                   text: "Register",
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color:Color.fromRGBO(79, 200, 127, 1)),
                   recognizer: TapGestureRecognizer()..onTap = () async {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
                   }
                 )
               ]
-            )),
+            )),*/
             SizedBox(height: 50),
-            TextButton(
-                onPressed: () {
-                  try {
-                    login(_password.text, _email.text, context);
-                  } catch (err) {
-                    throw Exception(err);
-                  }
-                },
-                child: Text('Sign In'))
+            Expanded(
+              child: Text('')
+              ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                children: [
+                  RichText(
+                    text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "By continuing, I accept TradEase'\s ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily:'Lexend',
+                        )
+                      ),
+                      TextSpan(
+                        text: "Privacy Policy",
+                        style: TextStyle(color:Color.fromRGBO(79, 200, 127, 1)),
+                        recognizer: TapGestureRecognizer()..onTap = () async {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const _privacypolicy()));
+                        }
+                      )
+                    ]
+                  )),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 200, vertical: 30),
+                      backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                      foregroundColor: Colors.black,
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily:'Lexend',
+                      )
+                    ),
+                      onPressed: () {
+                        try {
+                          login(_password.text, _email.text, context);
+                        } catch (err) {
+                          throw Exception(err);
+                        }
+                      },
+                      child: Text('Continue')
+                    )
+                ],
+              )
+            )
           ],
         ),
       ),

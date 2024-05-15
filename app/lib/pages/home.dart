@@ -23,7 +23,8 @@ class MyHome extends StatelessWidget {
     return MaterialApp(
       title: 'Home',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(79, 200, 127, 1)),
+        fontFamily: 'Lexend',
         useMaterial3: true,
       ),
       home: _home(),

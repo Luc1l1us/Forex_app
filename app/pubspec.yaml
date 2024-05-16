@@ -45,6 +45,7 @@ dependencies:
   fluttertoast: ^8.2.5
   provider: ^6.1.2
   jitsi_meet_flutter_sdk: ^0.4.2
+  random_avatar: any
 
 dev_dependencies:
   flutter_test:

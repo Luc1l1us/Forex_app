@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Let\'s get you in!', 
+            Text('Ready to Trade?', 
             textScaler: TextScaler.linear(5),
             style: TextStyle(fontFamily: 'Lexend'),
             textAlign: TextAlign.justify,
@@ -122,13 +122,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 30),
             RichText(
-              textAlign: TextAlign.justify,
+              textAlign: TextAlign.left,
               text: TextSpan(
                 children: [
                   TextSpan(
                     text: "Forgot Password?",
                     style: 
-                      TextStyle(color:Color.fromRGBO(79, 200, 127, 1),
+                      TextStyle(
+                        color:Color.fromRGBO(79, 200, 127, 1),
+                        fontFamily: 'Lexend'
                       ),
                     recognizer: TapGestureRecognizer()..onTap = () async {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
@@ -160,6 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ),
               onPressed: () {
+                // TODO: Get SHA1 footprint to use this
                 //logic here
               },
               icon: FaIcon(FontAwesomeIcons.google), 

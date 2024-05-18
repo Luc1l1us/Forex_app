@@ -29,8 +29,7 @@ class _signuplogin extends State<signuplogin> {
         child: Column(
           children: [
             Expanded(
-              child: Text('')
-              ),
+              child: Image.asset('assets/images/coins.png')),
             Align(
               alignment: Alignment.bottomCenter,
               child: Column(
@@ -81,7 +80,7 @@ class _signuplogin extends State<signuplogin> {
                     ],
                   ),
                   SizedBox(height: 30),
-                  Text('Reminder: When you invest, your capital is at risk'),
+                  Text('Reminder: When you invest, your capital is at risk', style: TextStyle(fontFamily: 'Lexend'),),
                   SizedBox(height: 30)
                 ],
               ),

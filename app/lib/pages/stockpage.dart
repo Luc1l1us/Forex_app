@@ -4,12 +4,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:sample_app/model/stockdatamodel.dart'; // For date formatting
+import 'package:sample_app/model/stockdatamodel.dart'; 
 
 class StockDetailPage extends StatelessWidget {
   final Stock stock;
   final apikey = dotenv.env['TWELVE_API'];
   StockDetailPage({required this.stock});
+  DateTime? lastDisplayedMonth;
 
   @override
   Widget build(BuildContext context) {
@@ -65,24 +66,34 @@ class StockDetailPage extends StatelessWidget {
                   }
 
                   List<FlSpot> spots = snapshot.data!;
+                  print(spots);
                   return LineChart(
                     LineChartData(
-                      minX: 0,
-                      minY: 0,
-                      gridData: FlGridData(show: false),
+                      gridData: FlGridData(show: true),
                       titlesData: FlTitlesData(
+                        topTitles: AxisTitles(),
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
+                            reservedSize: 22,
                             getTitlesWidget: (value, meta) {
                               DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                              return SideTitleWidget(
-                                axisSide: meta.axisSide,
-                                child: Text(DateFormat.E().format(date)),
-                              );
+                              
+                              // Check if the month has changed since the last displayed month
+                              if (lastDisplayedMonth == null || date.month != lastDisplayedMonth!.month) {
+                                lastDisplayedMonth = date;
+                                // Display the month label
+                                return SideTitleWidget(
+                                  axisSide: meta.axisSide,
+                                  child: Text(DateFormat('MMM d, yyyy').format(date)),
+                                );
+                              } else {
+                                // If the month hasn't changed, return an empty container
+                                return Container();
+                              }
                             },
-                          ),
                         ),
+                      ),
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
                         ),

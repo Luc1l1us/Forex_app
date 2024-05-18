@@ -79,6 +79,7 @@ flutter:
     - .env
     - assets\images\privacy.png
     - assets\images\cookies.png
+    - assets\images\coins.png
   fonts:
   - family: Lexend
     fonts:

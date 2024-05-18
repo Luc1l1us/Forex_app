@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
 
-Future<void> register(String password, email, BuildContext context) async {
+Future<void> register(String password, email, fname, lname, BuildContext context) async {
   String message = '';
   try {
     await _firebaseAuth.createUserWithEmailAndPassword(

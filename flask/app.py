@@ -33,23 +33,28 @@ def home():
 # TODO try to use firebase_admin instead of primitive methods like this
 @app.route("/add", methods=["POST"])
 def add_therapist():
-    therapistdata = request.json
-    name = therapistdata.get("name")
-    occupation = therapistdata.get("occupation")
+    userdata = request.json
+    email = userdata.get("email")
+    fname = userdata.get("firstname")
+    lname = userdata.get("lastname")
 
-    if not name or not occupation:
-        return jsonify({"error": "Name and occupation fields are required!"}), 400
 
-    add_therapistdata = {"name": name, "occupation": occupation}
+    if not email or not fname or not lname:
+        return jsonify({"error": "email, and name fields are required!"}), 400
 
-    result = firebase.post("/therapists", add_therapistdata)
+    add_userdata = {"First Name": fname, "Last Name": lname, "email": email}
 
-    response_data = {"id": result["name"], "name": name, "occupation": occupation}
+    result = firebase.post(f"/therapists", add_userdata)
+    #result = firebase.post("/therapists", add_therapistdata)
+
+    #response_data = {"id": result["name"], "name": name, "occupation": occupation}
+    response_data = {"First Name": fname, "Last Name": lname, "email": email}
+
 
     return jsonify(response_data), 201
 
 
-@app.route("/gettherapists", methods=["GET"])
+@app.route("/getusers", methods=["GET"])
 def get_therapists():
     therapist_ref = db.reference("therapists")
     therapists = therapist_ref.get()

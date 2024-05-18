@@ -1,12 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/firebase_options.dart';
 import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/pages/register.dart';
 
 
 // remove this after debugging
 void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
     child: const MaterialApp(
       home: signuplogin(),

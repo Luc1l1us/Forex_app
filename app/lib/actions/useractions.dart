@@ -1,5 +1,7 @@
 //import 'dart:convert';
 //import 'dart:math';
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sample_app/model/therapistmodel.dart';
 import 'package:sample_app/pages/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sample_app/pages/landingpage.dart';
 import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/actions/therapist_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +23,25 @@ Future<void> register(String password, email, fname, lname, BuildContext context
       email: email.trim(),
       password: password.trim()
     );
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
-    });
+
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:5000/add'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'email': email.trim(),
+        'firstname': fname.trim(),
+        'lastname': lname.trim(),
+      })
+    );
+
+    if (response.statusCode == 201) {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
+      });
+    } else {
+      throw Exception('Failed to add user information!');
+    }
+
   } on FirebaseAuthMultiFactorException catch (e) {
     if (e.code == 'weak-password') {
       message = 'The password is too weak.';
@@ -57,7 +76,7 @@ Future<void> login(String password, email, BuildContext context) async {
       password: password.trim()
     );
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHome()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const landingpage()));
     });
   } on FirebaseAuthMultiFactorException catch (e) {
     if (e.code == 'INVALID_LOGIN_CREDENTIALS') {

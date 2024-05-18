@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from firebase import firebase
 from flask_cors import CORS
 import requests
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -83,14 +84,35 @@ def update_therapist(therapist_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/forexupdate", methods=["GET"])
-def get_forexupdate():
-    get_forex = "https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,IXIC&interval=1min&apikey=demo"
-    # get_forex = "https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,TRP:TSX&interval=1min&apikey=1308290194f14fd8874b793fd1839f43"
-    response = requests.get(get_forex)
-    data = response.json()
-    return data, 200
+@app.route("/get_stocks", methods=["GET"])
+def get_stocks():
+    symbols = request.args.get('symbols')
+    if not symbols:
+        return jsonify({"error": "Symbols parameter is required"}), 400
+    
+    stock_data = []
+    
+    twelve_quoteurl = os.environ.get('TWELVE_DATA_BASE_URL')
+    twelve_logourl = os.environ.get('TWELVE_DATA_LOGO_URL')
+    twelvekey = os.environ.get('TWELVE_API')
 
+    url = f"{twelve_quoteurl}?symbol={symbols}&apikey={twelvekey}"
+    response = requests.get(url)
+
+    logourl = f"{twelve_logourl}?symbol={symbols}&apikey={twelvekey}"
+    logo_respose = requests.get(logourl)
+
+    """ if response == 200 and logo_respose == 200:
+        quote_data = response.json()
+        logo_data = response.json()
+
+        stock_data.append({
+            "symbol": symbol,
+            "name": name,
+            "price": close,
+        }) """
+
+    return jsonify(response.json()), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

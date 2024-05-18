@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/model/stockdatamodel.dart';
 import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/pages/notifcationspage.dart';
 import 'package:sample_app/pages/register.dart';
@@ -38,6 +39,14 @@ class _landingpage extends State<landingpage> {
     return 'Good Evening!';
   }
   int _currentpageindex = 0;
+  final StockService _stockService = StockService();
+  late Future<List<Stock>> _futureStocks;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,14 +159,18 @@ class _landingpage extends State<landingpage> {
                 Row(
                   children: [
                     Expanded(child: Text('')),
-                    Text('Market Status Today', style: genText),
+                    Text('Market Status Today', style: TextStyle(
+                      fontFamily: 'Lexend',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
                     // TODO change register here to actual update
                     SizedBox(width: 100),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
                       }, 
-                      child: Text('Last Update'),
+                      child: Text('See All'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                         backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
@@ -171,10 +184,73 @@ class _landingpage extends State<landingpage> {
                     Expanded(child: Text('')),
                   ]
                 ),
-              ],
+              ]
+            ),
+            Row(
+              textDirection: TextDirection.ltr,
+              children: [
+                SizedBox(width: 50),
+                Text('Stocks', 
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily:'Lexend',
+                  fontSize: 30,
+                )),
+              ]
+            ),
+            FutureBuilder<List<Stock>>(
+              future: _futureStocks, 
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No data available', style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily:'Lexend',
+                  fontSize: 20,
+                )));
+                }
+
+                final stocks = snapshot.data!;
+
+                return Expanded(
+                  child: ListView.builder(
+                  itemCount: stocks.length,
+                  itemBuilder: (context, index) {
+                    final stock = stocks[index];
+                    return Card(
+                      margin: EdgeInsets.only(left: 50, right: 50, bottom: 10, top: 30),
+                      child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                        foregroundColor: Colors.black,
+                        child: Text(stock.symbol[0]),
+                      ),
+                      title: Text(stock.name, style: genText),
+                      subtitle: Text(stock.symbol, style: genText),
+                      trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            Text('\$${stock.price.toStringAsFixed(2)}', style: genText,),
+                            Text(
+                              '${stock.changePercent.toStringAsFixed(2)}%',
+                              style: TextStyle(
+                                color: stock.change >= 0 ? Colors.green : Colors.red,
+                              )
+                            )
+                          ]
+                        ),
+                      )
+                    );
+                    },
+                  )
+                );
+              }
             )
           ],
-        ),
+        )
       ),
     );
   }

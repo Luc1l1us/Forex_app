@@ -46,6 +46,12 @@ dependencies:
   provider: ^6.1.2
   jitsi_meet_flutter_sdk: ^0.4.2
   random_avatar: any
+  fl_chart: ^0.68.0
+  intl: ^0.19.0
+  shared_preferences: ^2.0.6
+  sqflite: ^2.0.0+3
+  path_provider: ^2.0.2
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:

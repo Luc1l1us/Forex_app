@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/actions/therapist_provider.dart';
 import 'package:sample_app/model/stockdatamodel.dart';
@@ -6,10 +7,12 @@ import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/pages/notifcationspage.dart';
 import 'package:sample_app/pages/register.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:sample_app/pages/stockpage.dart';
 
 
 // remove this after debugging
 void main() async {
+  await dotenv.load(fileName: ".env");
   runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
     child: const MaterialApp(
       home: landingpage(),
@@ -25,9 +28,7 @@ class landingpage extends StatefulWidget {
 }
 
 class _landingpage extends State<landingpage> {
-  static TextStyle genText = TextStyle(
-    fontFamily: 'Lexend',
-  );
+  static TextStyle genText = TextStyle(fontFamily: 'Lexend');
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
@@ -139,8 +140,8 @@ class _landingpage extends State<landingpage> {
                   icon: 
                   Badge(
                     backgroundColor: Color.fromRGBO(0, 148, 116, 1),
-                    // TODO change label color to green
-                    label: Text('2'), //TODO Make this actual notification numbers
+                    // TODO: change label color to green
+                    label: Text('2'), //TODO: Make this actual notification numbers
                     child:(
                       Icon(
                         Icons.notification_add_outlined, 
@@ -164,7 +165,7 @@ class _landingpage extends State<landingpage> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     )),
-                    // TODO change register here to actual update
+                    // TODO: change register here to actual update
                     SizedBox(width: 100),
                     ElevatedButton(
                       onPressed: () {
@@ -222,28 +223,31 @@ class _landingpage extends State<landingpage> {
                     final stock = stocks[index];
                     return Card(
                       margin: EdgeInsets.only(left: 50, right: 50, bottom: 10, top: 30),
-                      child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
-                        foregroundColor: Colors.black,
-                        child: Text(stock.symbol[0]),
-                      ),
-                      title: Text(stock.name, style: genText),
-                      subtitle: Text(stock.symbol, style: genText),
-                      trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                            Text('\$${stock.price.toStringAsFixed(2)}', style: genText,),
-                            Text(
-                              '${stock.changePercent.toStringAsFixed(2)}%',
-                              style: TextStyle(
-                                color: stock.change >= 0 ? Colors.green : Colors.red,
-                              )
-                            )
-                          ]
-                        ),
-                      )
-                    );
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailPage(stock: stock)));
+                          },
+                          leading: CircleAvatar(
+                            backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                            foregroundColor: Colors.black,
+                            child: Text(stock.symbol[0]),
+                          ),
+                          title: Text(stock.name, style: genText),
+                          subtitle: Text(stock.symbol, style: genText),
+                          trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                Text('\$${stock.price.toStringAsFixed(2)}', style: genText,),
+                                Text(
+                                  '${stock.changePercent.toStringAsFixed(2)}%',
+                                  style: TextStyle(
+                                    color: stock.change >= 0 ? Colors.green : Colors.red,
+                                  )
+                                )
+                              ]
+                            ),
+                        )
+                      );
                     },
                   )
                 );

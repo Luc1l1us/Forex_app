@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Register',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 2, 243, 103)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),

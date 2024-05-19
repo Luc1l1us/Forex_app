@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class StockService {
   static const String baseUrl = 'http://127.0.0.1:5000/get_stocks';
@@ -11,23 +14,28 @@ class StockService {
     String cacheKey = symbols.join(',');
     String? cachedData = prefs.getString(cacheKey);
 
-    if (cachedData != null) {
-      final data = json.decode(cachedData);
-      return _parseStockData(data);
-    } else {
-      final response = await http.get(Uri.parse('$baseUrl?symbols=${symbols.join(',')}'));
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        List<Stock> stocks = [];
-        for (var symbol in symbols) {
-          if (data.containsKey(symbol)) {
-            stocks.add(Stock.fromJson(data[symbol]));
+    try {
+        if (cachedData != null) {
+          final data = json.decode(cachedData);
+          return _parseStockData(data);
+        } else {
+          final response = await http.get(Uri.parse('$baseUrl?symbols=${symbols.join(',')}'));
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> data = json.decode(response.body);
+            List<Stock> stocks = [];
+            for (var symbol in symbols) {
+              if (data.containsKey(symbol)) {
+                stocks.add(Stock.fromJson(data[symbol]));
+              }
+            }
+            return stocks;
+          } else {
+            throw Exception('Failed to load stock data!');
           }
         }
-        return stocks;
-      } else {
-        throw Exception('Failed to load stock data!');
-      }
+      
+    } catch (err) {
+      throw Exception("Error fetching stock data; $err");
     }
   }
 

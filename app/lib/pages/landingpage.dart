@@ -20,6 +20,7 @@ import 'package:sample_app/pages/tradepage.dart';
 // remove this after debugging
 void main() async {
   await dotenv.load(fileName: ".env");
+  await Firebase.initializeApp(); 
   runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
       home: landingpage(),
@@ -35,31 +36,7 @@ class landingpage extends StatefulWidget {
 }
 
 class _landingpage extends State<landingpage> {
-  static TextStyle genText = TextStyle(fontFamily: 'Lexend');
-  String greeting() {
-    var hour = DateTime.now().hour;
-    if (hour < 12) {
-      return 'Good Morning!';
-    }
-    if (hour < 17) {
-      return 'Good Afternoon!';
-    }
-    return 'Good Evening!';
-  }
-
   int _currentpageindex = 0;
-  final StockService _stockService = StockService();
-  late Future<List<Stock>> _futureStocks;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureStocks = _stockService.fetchStocks([]);
-    //_futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
-    //TODO: how tf do you even get the ID?
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.fetchUserFromApi(); 
-  }
 
   @override
   Widget build(BuildContext context) {

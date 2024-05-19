@@ -10,7 +10,7 @@ import 'package:sample_app/pages/register.dart';
 // remove this after debugging
 void main() async {
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(

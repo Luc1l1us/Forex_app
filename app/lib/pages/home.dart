@@ -18,6 +18,7 @@ import 'package:sample_app/pages/tradepage.dart';
 
 // remove this after debugging
 void main() async {
+  await Firebase.initializeApp(); 
   await dotenv.load(fileName: ".env");
   runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
@@ -53,9 +54,8 @@ class _home extends State<home> {
   @override
   void initState() {
     super.initState();
-    _futureStocks = _stockService.fetchStocks([]);
-    //_futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
-    //TODO: how tf do you even get the ID?
+    //_futureStocks = _stockService.fetchStocks([]);
+    _futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.fetchUserFromApi(); 
   }

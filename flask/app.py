@@ -52,24 +52,35 @@ def update_userdata(userId):
         field_to_update = data.get("field")
         updated_value = data.get("value")
         print(field_to_update, updated_value)
+        
         user_ref = db.reference(f"/therapists/{userId}")
-
+        
         if field_to_update == "firstname":
-            user_data = user_ref.update({"First Name": updated_value})
-        if field_to_update == "lastname":
-            user_data = user_ref.update({"Last Name": updated_value})
+            user_ref.update({"First Name": updated_value})
+        elif field_to_update == "lastname":
+            user_ref.update({"Last Name": updated_value})
         elif field_to_update == "username":
-            user_data = user_ref.update({"Username": updated_value})
+            user_ref.update({"Username": updated_value})
         else:
             return jsonify({"error": "Invalid field"}), 400
-        
-        if user_data is None:
-            return jsonify(user_data), 200
-        else:
-            return jsonify({"error": "User not found"}), 404
+
+        return jsonify({"message": "User data updated successfully"}), 200
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+    
+@app.route("/delete/<userId>", methods=["DELETE"])
+def del_user(userId):
+    therapist_ref = db.reference("therapists")
+    therapist_ref.child(userId).delete()
+    return "", 204
+
+""" @app.route("/therapists/<therapist_id>", methods=["DELETE"])
+def del_therapist(therapist_id):
+    therapist_ref = db.reference("therapists")
+    therapist_ref.child(therapist_id).delete()
+    return "", 204 """
 
 @app.route('/exchangecurrency', methods=["GET"])
 def exchange_currency():

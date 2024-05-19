@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sample_app/actions/user_provider.dart';
 import 'package:sample_app/pages/cookies.dart';
 import 'package:sample_app/pages/privacy_policy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../actions/useractions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase_options.dart';
@@ -24,11 +25,6 @@ void main() async {
 }
 
 bool _passwordVisible = false;
-
-@override
-  void initState() {
-    _passwordVisible = false;
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -57,6 +53,40 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  //final _email = TextEditingController(text: "edziemarin@gmail.com");
+  //final _password = TextEditingController(text: "yikes101");
+  bool _rememberMe = false;
+
+  @override
+    void initState() {
+      super.initState();
+      _passwordVisible = false;
+      _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _rememberMe = prefs.getBool('rememberMe') ?? false;
+      if (_rememberMe) {
+        _email.text = prefs.getString('email') ?? '';
+        _password.text = prefs.getString('password') ?? '';
+      }
+    });
+  }
+
+  Future<void> _saveCredentials() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('rememberMe', _rememberMe);
+    if (_rememberMe) {
+      await prefs.setString('email', _email.text);
+      await prefs.setString('password', _password.text);
+    } else {
+      await prefs.remove('email');
+      await prefs.remove('password');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +114,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),            
             SizedBox(height: 30),
             TextFormField(
+              controller: _email,
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: 'Email',
                 prefixIcon: Icon(Icons.email)
               ),
-              controller: _email,
             ),
             SizedBox(height: 10),
             TextFormField(
-              keyboardType: TextInputType.text,
               controller: _password,
+              keyboardType: TextInputType.text,
               obscureText: !_passwordVisible,
               validator: (val) {
                 if (val!.isEmpty) {
@@ -138,6 +168,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ]
             )),
+            CheckboxListTile(
+              
+              checkColor: Colors.white,
+              title: Text('Remember Me'),
+              value: _rememberMe,
+              onChanged: (value) {
+                setState(() {
+                  _rememberMe = value!;
+                  _saveCredentials();
+                });
+              },
+            ),            
             SizedBox(height: 30),
             Row(
               children: [

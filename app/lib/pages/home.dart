@@ -62,13 +62,6 @@ class _home extends State<home> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      home(),
-      searchpage(),
-      TradePage(),
-      portfoliopage(),
-      profilepage(),
-    ];
     return Scaffold(
       body: Container(
         child: Column(

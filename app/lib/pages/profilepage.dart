@@ -284,7 +284,7 @@ class _profilepage extends State<profilepage> {
                                     ),
                                   ),
                                 ),
-                                                                SizedBox(
+                                SizedBox(
                                   height: 80,
                                   child: ElevatedButton.icon(
                                     icon: Padding(
@@ -329,14 +329,13 @@ class _profilepage extends State<profilepage> {
                                   ),
                                 ),
                               ],
-                );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: Text('')
                 ),

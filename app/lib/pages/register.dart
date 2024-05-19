@@ -35,6 +35,21 @@ class _registerpage extends State<register_page> {
   final firstDate = DateTime(DateTime.now().year - 120);
   final lastDate = DateTime.now();
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +133,21 @@ class _registerpage extends State<register_page> {
                 ),
               ]
             ),
-            InputDatePickerFormField(
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 100, vertical: 30),
+                      backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                      foregroundColor: Colors.black,
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily:'Lexend',
+                      )
+                    ),
+              onPressed: () => _selectDate(context),
+              child: Text("Select Date"),
+            ),
+            /* InputDatePickerFormField(
               firstDate: firstDate,
               lastDate: lastDate,
               onDateSubmitted: (DateTime? date) {
@@ -128,7 +157,7 @@ class _registerpage extends State<register_page> {
                   });
                 }
               },
-            ),
+            ), */
             SizedBox(height: 10),
             TextFormField(
               keyboardType: TextInputType.text,

@@ -26,6 +26,7 @@ class _registerpage extends State<register_page> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmpassword = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  DateTime selectedDate = DateTime.now();
 
   final TextStyle labelstyle = TextStyle(
     fontFamily: 'Lexend',
@@ -120,7 +121,13 @@ class _registerpage extends State<register_page> {
             InputDatePickerFormField(
               firstDate: firstDate,
               lastDate: lastDate,
-              
+              onDateSubmitted: (DateTime? date) {
+                if (date != null) {
+                  setState(() {
+                    selectedDate = date;
+                  });
+                }
+              },
             ),
             SizedBox(height: 10),
             TextFormField(
@@ -248,9 +255,10 @@ class _registerpage extends State<register_page> {
                       )
                     ),
                       onPressed: () {
+                        print('Date: $selectedDate');
                         _form.currentState?.validate();
                         try {
-                          register(_password.text, _email.text, _fname.text, _lname.text, context);
+                          register(_password.text, _email.text, _fname.text, _lname.text, selectedDate, context);
                         } catch (err) {
                           throw Exception(err);
                         }

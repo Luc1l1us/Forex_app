@@ -1,7 +1,9 @@
 //import 'dart:html';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:sample_app/actions/user_provider.dart';
@@ -64,219 +66,309 @@ class _profilepage extends State<profilepage> {
           child: Form(
             key: _form, 
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              children: [
-                SizedBox(width: 50),
-                RandomAvatar(
-                  DateTime.now().toIso8601String(),
-                  height: 75,
-                  width: 75,
-                ),
-                SizedBox(width: 20),
-                Container(
-                    alignment: Alignment.topLeft,
-                    margin: EdgeInsets.only(right: 50),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FutureBuilder<void>(
-                          future: Provider.of<UserProvider>(context, listen: false).fetchUserFromApi(), 
-                          builder: ((context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                child: Text("Error loading user data"),
-                              );
-                            } else {
-                              final userProvider = Provider.of<UserProvider>(context, listen: false);
-                              if (!userProvider.isUserLoaded) {
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  children: [
+                    SizedBox(width: 50),
+                    RandomAvatar(
+                      DateTime.now().toIso8601String(),
+                      height: 75,
+                      width: 75,
+                    ),
+                    SizedBox(width: 20),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(right: 50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FutureBuilder<void>(
+                            future: Provider.of<UserProvider>(context, listen: false).fetchUserFromApi(), 
+                            builder: ((context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Center(
-                                  child: Text("No user data found"),
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text("Error loading user data"),
+                                );
+                              } else {
+                                final userProvider = Provider.of<UserProvider>(context, listen: false);
+                                if (!userProvider.isUserLoaded) {
+                                  return Center(
+                                    child: Text("No user data found"),
+                                  );
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '${userProvider.user['email']}',
+                                        style: TextStyle(
+                                          fontFamily: 'Lexend',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                    ),
+                                    Text(
+                                      '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                      style: TextStyle(
+                                        fontFamily: 'Lexend',
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ]
                                 );
                               }
-                              return Text(
-                                  '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
-                                  style: TextStyle(
-                                    fontFamily: 'Lexend',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                  ),
-                              );
                             }
-                          }
-                        )
-                      ),
-                    ],
-                    )
-                  ),
-                SizedBox(width: 30),
-              ],
-            ),
-            Text('Let\'s get you in!', 
-            textScaler: TextScaler.linear(3),
-            style: TextStyle(fontFamily: 'Lexend'),
-            textAlign: TextAlign.justify,
-            ), 
-            SizedBox(height: 30),
-            TextFormField(
-              controller: _fname,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'First Name',
-                labelStyle: labelstyle,
-              ),
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              controller: _lname,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Last Name',
-                labelStyle: labelstyle,
-              ),
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              controller: _email,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'E-mail Address',
-                labelStyle: labelstyle,
-              ),
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 40),
-            Row(
-              children: [
-                Text(
-                  'Date of Birth',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontFamily: 'Lexend',
-                  ),
-                ),
-              ]
-            ),
-            InputDatePickerFormField(
-              firstDate: firstDate,
-              lastDate: lastDate,
-              
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              keyboardType: TextInputType.text,
-              controller: _password,
-              obscureText: !_passwordVisible,
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                )
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              keyboardType: TextInputType.text,
-              controller: _confirmpassword,
-              obscureText: !_passwordVisible,
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                if (val != _password.text) {
-                  return 'Passwords do not match!';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Confirm Password',
-                hintText: 'Confirm your password',
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                )
-              ),
-            ),
-            SizedBox(height: 30),         
-            SizedBox(height: 20),
-              Expanded(
-                child: Text('')
-              ),
-              Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 200, vertical: 30),
-                      backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
-                      foregroundColor: Colors.black,
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily:'Lexend',
+                          )
+                        ),
+                        Text('Profile and Settings')
+                      ],
                       )
                     ),
-                      onPressed: () {
-                        _form.currentState?.validate();
-                        try {
-                          register(_password.text, _email.text, _fname.text, _lname.text, context);
-                        } catch (err) {
-                          throw Exception(err);
-                        }
-                      },
-                      child: Text('Update Profile')
-                    )
-                ],
+                    SizedBox(width: 30),
+                  ],
+                ),
+
+                SizedBox(height: 30),
+                Column(
+                  children: [
+                    SizedBox(
+                      child: FutureBuilder<void>(
+                        future: Provider.of<UserProvider>(context, listen: false).fetchUserFromApi(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text("Error loading user data"));
+                          } else {
+                            final userProvider = Provider.of<UserProvider>(context, listen: false);
+                            return 
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  child: ElevatedButton.icon(
+                                    icon: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.remember_me_outlined, color: Color.fromRGBO(0, 148, 116, 1))
+                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    label: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Name',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ]
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                SizedBox(
+                                  height: 80,
+                                  child: ElevatedButton.icon(
+                                    icon: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.person_outlined, color: Color.fromRGBO(0, 148, 116, 1))
+                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    label: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Username',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ]
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                SizedBox(
+                                  height: 80,
+                                  child: ElevatedButton.icon(
+                                    icon: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.email_outlined, color: Color.fromRGBO(0, 148, 116, 1))
+                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    label: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Email',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${userProvider.user['email']}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ]
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                                                SizedBox(
+                                  height: 80,
+                                  child: ElevatedButton.icon(
+                                    icon: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.cake_outlined, color: Color.fromRGBO(0, 148, 116, 1))
+                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    label: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Birthday',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${DateFormat('yyyy-MM-dd').format(DateTime.parse(userProvider.user['birthday']))}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ]
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+
+                Expanded(
+                  child: Text('')
+                ),
+                Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 200, vertical: 30),
+                        backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                        foregroundColor: Colors.black,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily:'Lexend',
+                        )
+                      ),
+                        onPressed: () {
+                          _form.currentState?.validate();
+                          try {
+                            //TODO: update function here
+                          } catch (err) {
+                            throw Exception(err);
+                          }
+                        },
+                        child: Text('Update Profile')
+                      )
+                  ],
+                )
               )
-            )
-          ],
+              ],
         ),
       ),
     )

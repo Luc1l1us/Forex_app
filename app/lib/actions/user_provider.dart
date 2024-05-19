@@ -124,6 +124,7 @@ class UserProvider with ChangeNotifier {
       "email": value['email'] ?? '',
       "firstName": value['First Name'] ?? '',
       "lastName": value['Last Name'] ?? '',
+      "birthday": value['birthday'] != null ? DateTime.parse(value['birthday']) : null,
     }));
   }
 

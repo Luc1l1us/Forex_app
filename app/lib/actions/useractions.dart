@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
 
-Future<void> register(String password, email, fname, lname, BuildContext context) async {
+Future<void> register(String password, email, fname, lname, DateTime bdate, BuildContext context) async {
   String message = '';
   try {
     UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -29,7 +29,7 @@ Future<void> register(String password, email, fname, lname, BuildContext context
       throw Exception("User creation failed!");
     }
     final String uid = currentUser.uid;
-
+    print('Birthday: $bdate');
     final response = await http.post(
       Uri.parse('http://127.0.0.1:5000/add'),
       headers: {'Content-Type': 'application/json'},
@@ -38,6 +38,7 @@ Future<void> register(String password, email, fname, lname, BuildContext context
         'email': email.trim(),
         'firstname': fname.trim(),
         'lastname': lname.trim(),
+        'birthday': bdate.toIso8601String(),
       })
     );
 

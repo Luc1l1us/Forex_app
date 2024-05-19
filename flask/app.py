@@ -31,19 +31,20 @@ def add_therapist():
     email = userdata.get("email")
     fname = userdata.get("firstname")
     lname = userdata.get("lastname")
+    bdate = userdata.get("birthday")
 
-
-    if not email or not fname or not lname or not uid:
-        return jsonify({"error": "uid, email, and name fields are required!"}), 400
+    if not email or not fname or not lname or not uid or not bdate:
+        return jsonify({"error": "uid, email, name, and bdate fields are required!"}), 400
 
     add_userdata = {
         "First Name": fname, 
         "Last Name": lname, 
-        "email": email
+        "email": email,
+        "birthday": bdate,
     }
     user_ref = db.reference(f"/therapists/{uid}")
     user_ref.set(add_userdata)
-    response_data = {"First Name": fname, "Last Name": lname, "email": email}
+    response_data = {"First Name": fname, "Last Name": lname, "email": email, "birthday": bdate}
     return jsonify(response_data), 201
 
 @app.route('/exchangecurrency', methods=["GET"])

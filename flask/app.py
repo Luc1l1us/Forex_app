@@ -14,14 +14,14 @@ firebase = firebase.FirebaseApplication(
 # cred = credentials.Certificate(
 #    "/home/dizzy/Downloads/gen-lang-client-0909444084-default-rtdb-export.json"
 # )  # Linux
-# cred = credentials.Certificate("D:\Downloads\gen-lang-client-0909444084-firebase-adminsdk-2nfej-61b29242e5.json") #Windows
-# firebase_admin.initialize_app(
-#    cred,
-#    {"databaseURL": "https://gen-lang-client-0909444084-default-rtdb.firebaseio.com"},
-# )
+cred = credentials.Certificate("D:\Downloads\gen-lang-client-0909444084-firebase-adminsdk-2nfej-61b29242e5.json") #Windows
+firebase_admin.initialize_app(
+    cred,
+    {"databaseURL": "https://gen-lang-client-0909444084-default-rtdb.firebaseio.com"},
+)
 # firebase = FirebaseAdmin(app)
 
-default_app = firebase_admin.initialize_app()
+#default_app = firebase_admin.initialize_app()
 
 
 @app.route("/")
@@ -34,41 +34,57 @@ def home():
 @app.route("/add", methods=["POST"])
 def add_therapist():
     userdata = request.json
+    uid = userdata.get("uid")
     email = userdata.get("email")
     fname = userdata.get("firstname")
     lname = userdata.get("lastname")
 
 
-    if not email or not fname or not lname:
-        return jsonify({"error": "email, and name fields are required!"}), 400
+    if not email or not fname or not lname or not uid:
+        return jsonify({"error": "uid, email, and name fields are required!"}), 400
 
-    add_userdata = {"First Name": fname, "Last Name": lname, "email": email}
+    add_userdata = {
+        "First Name": fname, 
+        "Last Name": lname, 
+        "email": email
+    }
 
-    result = firebase.post(f"/therapists", add_userdata)
-    #result = firebase.post("/therapists", add_therapistdata)
+    user_ref = db.reference(f"/therapists/{uid}")
+    user_ref.set(add_userdata)
 
-    #response_data = {"id": result["name"], "name": name, "occupation": occupation}
     response_data = {"First Name": fname, "Last Name": lname, "email": email}
-
-
     return jsonify(response_data), 201
 
+    """ result = firebase.post(f"/therapists", add_userdata)
+    #result = firebase.post("/therapists", add_therapistdata)
+    #response_data = {"id": result["name"], "name": name, "occupation": occupation}
+    response_data = {"First Name": fname, "Last Name": lname, "email": email} 
+    return jsonify(response_data), 201 """
 
-@app.route("/getusers", methods=["GET"])
+
+""" @app.route("/getusers", methods=["GET"])
 def get_therapists():
-    therapist_ref = db.reference("therapists")
+    therapist_ref = db.reference(f"/therapists")
     therapists = therapist_ref.get()
     return jsonify(therapists)
     # alltherapists = firebase.get('/therapists', None)
-    # return jsonify(alltherapists), 200
+    # return jsonify(alltherapists), 200 """
 
+@app.route("/getusers/<userId>", methods=["GET"])
+def get_user(userId):
+    user_ref = db.reference(f"/therapists/{userId}")
+    user_data = user_ref.get()
+    #user_data = user_ref.child(userId).get()
+    if user_data:
+        return jsonify(user_data), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 @app.route("/therapists/<therapist_id>", methods=["DELETE"])
 def del_therapist(therapist_id):
     therapist_ref = db.reference("therapists")
     therapist_ref.child(therapist_id).delete()
     return "", 204
-
 
 @app.route("/update/<therapist_id>", methods=["PUT"])
 def update_therapist(therapist_id):

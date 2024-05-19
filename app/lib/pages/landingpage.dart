@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/actions/user_provider.dart';
+import 'package:sample_app/firebase_options.dart';
 import 'package:sample_app/model/stockdatamodel.dart';
 import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/pages/notifcationspage.dart';
@@ -13,7 +15,7 @@ import 'package:sample_app/pages/stockpage.dart';
 // remove this after debugging
 void main() async {
   await dotenv.load(fileName: ".env");
-  runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
+  runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
       home: landingpage(),
     ),
@@ -39,6 +41,7 @@ class _landingpage extends State<landingpage> {
     }
     return 'Good Evening!';
   }
+
   int _currentpageindex = 0;
   final StockService _stockService = StockService();
   late Future<List<Stock>> _futureStocks;
@@ -46,11 +49,25 @@ class _landingpage extends State<landingpage> {
   @override
   void initState() {
     super.initState();
-    _futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
+    _futureStocks = _stockService.fetchStocks([]);
+    //_futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
+    //TODO: how tf do you even get the ID?
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.fetchUserFromApi(); 
   }
 
   @override
   Widget build(BuildContext context) {
+/*     if (!userProvider.isUserLoaded) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Home Page'),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } */
     return Scaffold(
       bottomNavigationBar: Container( 
         decoration: const BoxDecoration(
@@ -121,13 +138,34 @@ class _landingpage extends State<landingpage> {
                             fontFamily: 'Lexend',
                           ),
                         ),
-                        Text(
-                          'Heinrich Imperial',
-                          style: TextStyle(
-                            fontFamily: 'Lexend',
-                            fontWeight: FontWeight.bold  
-                          ),
-                        ),
+                        FutureBuilder<void>(
+                          future: Provider.of<UserProvider>(context, listen: false).fetchUserFromApi(), 
+                          builder: ((context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text("Error loading user data"),
+                              );
+                            } else {
+                              final userProvider = Provider.of<UserProvider>(context, listen: false);
+                              if (!userProvider.isUserLoaded) {
+                                return Center(
+                                  child: Text("No user data found"),
+                                );
+                              }
+                              return Text(
+                                  '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                  style: TextStyle(
+                                    fontFamily: 'Lexend',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
+                              );
+                            }
+                          })),
                     ],
                   )
                 ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/actions/user_provider.dart';
 import 'package:sample_app/pages/cookies.dart';
 import 'package:sample_app/pages/privacy_policy.dart';
 import '../actions/useractions.dart';
@@ -16,7 +16,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
-  runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
+  runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
       home: MyApp(),
     ),

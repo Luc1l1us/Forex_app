@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/actions/user_provider.dart';
 import 'package:sample_app/firebase_options.dart';
 import 'package:sample_app/pages/login.dart';
 import 'package:sample_app/pages/register.dart';
@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
-  runApp(ChangeNotifierProvider(create: (context) => TherepistProvider(),
+  runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
       home: signuplogin(),
     ),

@@ -11,7 +11,7 @@ import 'package:sample_app/pages/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sample_app/pages/landingpage.dart';
 import 'package:sample_app/pages/login.dart';
-import 'package:sample_app/actions/therapist_provider.dart';
+import 'package:sample_app/actions/user_provider.dart';
 import 'package:provider/provider.dart';
 
 final _firebaseAuth = FirebaseAuth.instance;
@@ -19,15 +19,22 @@ final _firebaseAuth = FirebaseAuth.instance;
 Future<void> register(String password, email, fname, lname, BuildContext context) async {
   String message = '';
   try {
-    await _firebaseAuth.createUserWithEmailAndPassword(
+    UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email.trim(),
       password: password.trim()
     );
+
+    User? currentUser = userCredential.user;
+    if (currentUser == null) {
+      throw Exception("User creation failed!");
+    }
+    final String uid = currentUser.uid;
 
     final response = await http.post(
       Uri.parse('http://127.0.0.1:5000/add'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
+        'uid': uid.trim(),
         'email': email.trim(),
         'firstname': fname.trim(),
         'lastname': lname.trim(),
@@ -95,7 +102,8 @@ Future<void> login(String password, email, BuildContext context) async {
   }
 }
 
-AlertDialog addtherapist(BuildContext context) {
+//TODO: adding user but this is not admin anyway
+/* AlertDialog addtherapist(BuildContext context) {
   TextEditingController _name = TextEditingController();
   TextEditingController _occupation = TextEditingController();
   TextEditingController _contact = TextEditingController();
@@ -138,7 +146,7 @@ AlertDialog addtherapist(BuildContext context) {
     actions: <Widget>[
       TextButton(
         onPressed: () {
-          Provider.of<TherepistProvider>(context, listen: false).add(_name.text, _occupation.text, _contact.text, _department.text);
+          Provider.of<UserProvider>(context, listen: false).add(_name.text, _occupation.text, _contact.text, _department.text);
           Navigator.of(context).pop();          
         }, 
         child: Text('Add')
@@ -151,19 +159,21 @@ AlertDialog addtherapist(BuildContext context) {
       ),
     ],
   );
-}
+} */
 
-Future<void> deleteTherapist(String therapistID, BuildContext context) async {
+//TODO: deleting user records might be handy here
+/* Future<void> deleteTherapist(String therapistID, BuildContext context) async {
   try {
     final url = 'http://127.0.0.1:5000/therapists/$therapistID';
     final response = await http.delete(Uri.parse(url));
   } catch (err) {
     print(err);
   }
-  Provider.of<TherepistProvider>(context, listen: false).getTherapists;
-}
+  Provider.of<UserProvider>(context, listen: false).getTherapists;
+} */
 
-AlertDialog updateTherapist(BuildContext context, String therapistID) {
+//TODO: Update method for later
+/* AlertDialog updateTherapist(BuildContext context, String therapistID) {
   TextEditingController _name = TextEditingController();
   TextEditingController _occupation = TextEditingController();
   TextEditingController _contact = TextEditingController();
@@ -219,4 +229,4 @@ AlertDialog updateTherapist(BuildContext context, String therapistID) {
       ),
     ],
   );
-}
+} */

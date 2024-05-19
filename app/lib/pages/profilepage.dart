@@ -164,13 +164,17 @@ class _profilepage extends State<profilepage> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _showUpdateDialog(context, 'First Name', '${userProvider.user['First Name']}', (newValue) {
+                                        Provider.of<UserProvider>(context, listen: false).updateFirstName(newValue);
+                                      });
+                                    },
                                     label: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         SizedBox(width: 10),
                                         Text(
-                                          'Name',
+                                          'First Name',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
@@ -181,7 +185,55 @@ class _profilepage extends State<profilepage> {
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               Text(
-                                                '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                                '${userProvider.user['First Name']}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ]
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 80,
+                                  child: ElevatedButton.icon(
+                                    icon: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.remember_me_outlined, color: Color.fromRGBO(0, 148, 116, 1))
+                                      ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _showUpdateDialog(context, 'Last Name', '${userProvider.user['Last Name']}', (newValue) {
+                                        Provider.of<UserProvider>(context, listen: false).updateLastName(newValue);
+                                      });
+                                    },
+                                    label: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Last Name',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '${userProvider.user['Last Name']}',
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,
@@ -209,7 +261,10 @@ class _profilepage extends State<profilepage> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _showUpdateDialog(context, 'Username', '${userProvider.user['Username']}', (newValue) {
+                                        Provider.of<UserProvider>(context, listen: false).updateUsername(newValue);                                    
+                                    });},
                                     label: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
@@ -226,7 +281,7 @@ class _profilepage extends State<profilepage> {
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               Text(
-                                                '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                                '${userProvider.user['Username']}',
                                                 style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,
@@ -254,7 +309,10 @@ class _profilepage extends State<profilepage> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                        _showUpdateDialog(context, 'email', '${userProvider.user['email']}', (newValue) {
+                                        Provider.of<UserProvider>(context, listen: false).updateUsername(newValue);                                    
+                                    });},
                                     label: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
@@ -373,4 +431,38 @@ class _profilepage extends State<profilepage> {
     )
     ));
   }
+}
+
+void _showUpdateDialog(BuildContext context, String title, String currentValue, Function(String) onUpdate) {
+  TextEditingController _controller = TextEditingController(text: currentValue);
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Update $title'),
+        content: TextFormField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: 'New $title',
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              onUpdate(_controller.text);
+              Navigator.of(context).pop();
+            },
+            child: Text('Update'),
+          ),
+        ],
+      );
+    },
+  );
 }

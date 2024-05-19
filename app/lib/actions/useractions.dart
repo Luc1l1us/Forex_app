@@ -103,65 +103,6 @@ Future<void> login(String password, email, BuildContext context) async {
   }
 }
 
-//TODO: adding user but this is not admin anyway
-/* AlertDialog addtherapist(BuildContext context) {
-  TextEditingController _name = TextEditingController();
-  TextEditingController _occupation = TextEditingController();
-  TextEditingController _contact = TextEditingController();
-  TextEditingController _department = TextEditingController();
-
-
-  return AlertDialog(
-    title: Text('Add Therapist/Employee'),
-    content: 
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Add a therapist or Employee for employment purposes.'),
-          SizedBox(height: 30),
-          TextFormField(
-            controller: _name,
-            decoration: InputDecoration(
-              labelText: 'Name',
-            ),
-          ),
-          TextFormField(
-            controller: _occupation,
-            decoration: InputDecoration(
-              labelText: 'Occupation',
-            ),
-          ),
-          TextFormField(
-            controller: _contact,
-            decoration: InputDecoration(
-              labelText: 'Contact Information',
-            ),
-          ),
-          TextFormField(
-            controller: _department,
-            decoration: InputDecoration(
-              labelText: 'Department',
-            ),
-          )
-          ]),
-    actions: <Widget>[
-      TextButton(
-        onPressed: () {
-          Provider.of<UserProvider>(context, listen: false).add(_name.text, _occupation.text, _contact.text, _department.text);
-          Navigator.of(context).pop();          
-        }, 
-        child: Text('Add')
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        }, 
-        child: Text('Cancel')
-      ),
-    ],
-  );
-} */
-
 //TODO: deleting user records might be handy here
 /* Future<void> deleteTherapist(String therapistID, BuildContext context) async {
   try {

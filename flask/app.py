@@ -19,9 +19,6 @@ firebase_admin.initialize_app(
     cred,
     {"databaseURL": "https://gen-lang-client-0909444084-default-rtdb.firebaseio.com"},
 )
-# firebase = FirebaseAdmin(app)
-
-#default_app = firebase_admin.initialize_app()
 
 # TODO try to use firebase_admin instead of primitive methods like this
 @app.route("/add", methods=["POST"])
@@ -46,6 +43,33 @@ def add_therapist():
     user_ref.set(add_userdata)
     response_data = {"First Name": fname, "Last Name": lname, "email": email, "birthday": bdate}
     return jsonify(response_data), 201
+
+@app.route("/update/<userId>", methods=["PUT"])
+def update_userdata(userId):
+    try:
+        data = request.json
+        print(data)
+        field_to_update = data.get("field")
+        updated_value = data.get("value")
+        print(field_to_update, updated_value)
+        user_ref = db.reference(f"/therapists/{userId}")
+
+        if field_to_update == "firstname":
+            user_data = user_ref.update({"First Name": updated_value})
+        if field_to_update == "lastname":
+            user_data = user_ref.update({"Last Name": updated_value})
+        elif field_to_update == "username":
+            user_data = user_ref.update({"Username": updated_value})
+        else:
+            return jsonify({"error": "Invalid field"}), 400
+        
+        if user_data is None:
+            return jsonify(user_data), 200
+        else:
+            return jsonify({"error": "User not found"}), 404
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/exchangecurrency', methods=["GET"])
 def exchange_currency():

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path/path.dart';
 
 class UserProvider with ChangeNotifier {
   List<Map<String, dynamic>> _users = [];
@@ -17,31 +18,126 @@ class UserProvider with ChangeNotifier {
     return [..._users];
   }
 
-  //TODO: Adding therapists but we do not need it anymore
-/*   Future<void> add(String name, occupation, contact, department) async {
-    //final url = 'http://127.0.0.1:5000'; //TODO make this in an .ENV FILE
-    Map<String, dynamic> request = {
-      "name": name,
-      "occupation": occupation,
-      "contact": contact,
-      "department": department,
+  Future<void> updateFirstName(String newName) async {
+  var response;
+  try {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception("No user is logged in!");
+    }
+    final String userId = currentUser.uid;
+
+    final Map<String, dynamic> requestData = {
+      "field": "firstname",
+      "value": newName,
     };
-    final headers = {
-      'Content-Type': 'application/json'
-    };
-    final response = await http.post(
-      Uri.parse('http://127.0.0.1:5000/add'), 
-      headers: headers,
-      body: json.encode(request)
+
+    response = await http.put(
+      Uri.parse('http://127.0.0.1:5000/update/$userId'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData)
     );
 
     if (response.statusCode == 200) {
-      await getTherapists;
+      print('Name updated successfully');
+    } else {
+      print('Failed to update name. Status code: ${response.statusCode}');
     }
-    getTherapists;
-    notifyListeners();
-  } */
-  
+  } catch (error) {
+    print('Error updating name: $error');
+  }
+}
+
+  Future<void> updateLastName(String newName) async {
+  var response;
+  try {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception("No user is logged in!");
+    }
+    final String userId = currentUser.uid;
+
+    final Map<String, dynamic> requestData = {
+      "field": "lastname",
+      "value": newName,
+    };
+
+    response = await http.put(
+      Uri.parse('http://127.0.0.1:5000/update/$userId'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData)
+    );
+
+    if (response.statusCode == 200) {
+      print('Name updated successfully');
+    } else {
+      print('Failed to update name. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error updating name: $error');
+  }
+}
+
+Future<void> updateUsername(String newUsername) async {
+  var response;
+  try {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception("No user is logged in!");
+    }
+    final String userId = currentUser.uid;
+
+    final Map<String, dynamic> requestData = {
+      "field": "username",
+      "value": newUsername,
+    };
+
+    response = await http.put(
+      Uri.parse('http://127.0.0.1:5000/update/$userId'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData)
+    );
+
+    if (response.statusCode == 200) {
+      print('Name updated successfully');
+    } else {
+      print('Failed to update name. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error updating name: $error');
+  }
+}
+
+Future<void> updateEmail(String newEmail) async {
+  var response;
+  try {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      throw Exception("No user is logged in!");
+    }
+    final String userId = currentUser.uid;
+
+    final Map<String, dynamic> requestData = {
+      "field": "email",
+      "value": newEmail,
+    };
+
+    response = await http.put(
+      Uri.parse('http://127.0.0.1:5000/update/$userId'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData)
+    );
+
+    if (response.statusCode == 200) {
+      print('Name updated successfully');
+    } else {
+      print('Failed to update name. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error updating name: $error');
+  }
+}
+
 //TODO: Update method for later too
 /*   Future<void> update(String therapistId, String newName, newOccupation, newContact, newDepartment) async {
       final url = 'http://127.0.0.1:5000/update/$therapistId';
@@ -102,21 +198,6 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-/* 
-  Future<void> get getTherapists async {
-    var response;
-    try {
-      response = await http.get(Uri.parse('http://127.0.0.1:5000/getusers'));
-      print(response.body);
-      //TODO body has error, get idea from past project
-      List<Map<String, dynamic>> users = parseUsers(response.body);
-      _users = users;
-    } catch (err) {
-      print(err);
-    }
-    notifyListeners();
-  } */
-  
   Map<String, dynamic> parseUsers(String responseBody) {
     final Map<String, dynamic> therapistsMap = json.decode(responseBody);
     return therapistsMap.map((key, value) => MapEntry(key, {
@@ -127,11 +208,4 @@ class UserProvider with ChangeNotifier {
       "birthday": value['birthday'] != null ? DateTime.parse(value['birthday']) : null,
     }));
   }
-
-/*   Future<void> loadUser() async {
-    String? userId = await getCurrentUserUID();
-    if (userId != null) {
-      await fetchUserFromApi(userId);
-    }
-  } */
 }

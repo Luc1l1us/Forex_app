@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/actions/user_provider.dart';
-import 'package:sample_app/pages/login.dart';
-import 'package:sample_app/pages/register.dart';
-import 'package:random_avatar/random_avatar.dart';
-
 
 // remove this after debugging
 void main() async {

@@ -23,13 +23,6 @@ firebase_admin.initialize_app(
 
 #default_app = firebase_admin.initialize_app()
 
-
-@app.route("/")
-def home():
-    result = firebase.get("/therapists", None)
-    return str(result)
-
-
 # TODO try to use firebase_admin instead of primitive methods like this
 @app.route("/add", methods=["POST"])
 def add_therapist():
@@ -48,27 +41,58 @@ def add_therapist():
         "Last Name": lname, 
         "email": email
     }
-
     user_ref = db.reference(f"/therapists/{uid}")
     user_ref.set(add_userdata)
-
     response_data = {"First Name": fname, "Last Name": lname, "email": email}
     return jsonify(response_data), 201
 
-    """ result = firebase.post(f"/therapists", add_userdata)
-    #result = firebase.post("/therapists", add_therapistdata)
-    #response_data = {"id": result["name"], "name": name, "occupation": occupation}
-    response_data = {"First Name": fname, "Last Name": lname, "email": email} 
-    return jsonify(response_data), 201 """
+@app.route('/exchangecurrency', methods=["GET"])
+def exchange_currency():
+    symbols = request.args.get('symbol')
+    amount = request.args.get('amount')
+    if not symbols or amount is None:
+        return jsonify({"error": "Symbols and amount parameter is required"}), 400
 
+    twelve_currexchange = os.environ.get('TWELVE_DATA_EXCHANGE_URL')
+    twelvekey = os.environ.get('TWELVE_API')
 
-""" @app.route("/getusers", methods=["GET"])
-def get_therapists():
-    therapist_ref = db.reference(f"/therapists")
-    therapists = therapist_ref.get()
-    return jsonify(therapists)
-    # alltherapists = firebase.get('/therapists', None)
-    # return jsonify(alltherapists), 200 """
+    url = f"{twelve_currexchange}?symbol={symbols}&amount={amount}&apikey={twelvekey}"
+    response = requests.get(url)
+    return jsonify(response.json()), 200
+
+@app.route('/searchforex', methods=["GET"])
+def get_searchstocks():
+    symbols = request.args.get('symbols')
+    if not symbols:
+        return jsonify({"error": "Symbols parameter is required"}), 400
+
+    twelve_searchstocks = os.environ.get('TWELVE_DATA_SEARCH_URL')
+    twelvekey = os.environ.get('TWELVE_API')
+
+    url = f"{twelve_searchstocks}?symbol={symbols}"
+    response = requests.get(url)
+
+    return jsonify(response.json()), 200
+
+@app.route("/get_stocks", methods=["GET"])
+def get_stocks():
+    symbols = request.args.get('symbols')
+    if not symbols:
+        return jsonify({"error": "Symbols parameter is required"}), 400
+    
+    stock_data = []
+    
+    twelve_quoteurl = os.environ.get('TWELVE_DATA_BASE_URL')
+    twelve_logourl = os.environ.get('TWELVE_DATA_LOGO_URL')
+    twelvekey = os.environ.get('TWELVE_API')
+
+    url = f"{twelve_quoteurl}?symbol={symbols}&apikey={twelvekey}"
+    response = requests.get(url)
+
+    logourl = f"{twelve_logourl}?symbol={symbols}&apikey={twelvekey}"
+    logo_respose = requests.get(logourl)
+
+    return jsonify(response.json()), 200
 
 @app.route("/getusers/<userId>", methods=["GET"])
 def get_user(userId):
@@ -105,35 +129,6 @@ def update_therapist(therapist_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/get_stocks", methods=["GET"])
-def get_stocks():
-    symbols = request.args.get('symbols')
-    if not symbols:
-        return jsonify({"error": "Symbols parameter is required"}), 400
-    
-    stock_data = []
-    
-    twelve_quoteurl = os.environ.get('TWELVE_DATA_BASE_URL')
-    twelve_logourl = os.environ.get('TWELVE_DATA_LOGO_URL')
-    twelvekey = os.environ.get('TWELVE_API')
-
-    url = f"{twelve_quoteurl}?symbol={symbols}&apikey={twelvekey}"
-    response = requests.get(url)
-
-    logourl = f"{twelve_logourl}?symbol={symbols}&apikey={twelvekey}"
-    logo_respose = requests.get(logourl)
-
-    """ if response == 200 and logo_respose == 200:
-        quote_data = response.json()
-        logo_data = response.json()
-
-        stock_data.append({
-            "symbol": symbol,
-            "name": name,
-            "price": close,
-        }) """
-
-    return jsonify(response.json()), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

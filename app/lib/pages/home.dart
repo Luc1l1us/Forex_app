@@ -1,152 +1,257 @@
-/* //import 'dart:js';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:sample_app/actions/useractions.dart';
-import '../actions/user_provider.dart';
+import 'package:sample_app/actions/user_provider.dart';
+import 'package:sample_app/firebase_options.dart';
+import 'package:sample_app/model/stockdatamodel.dart';
+import 'package:sample_app/pages/login.dart';
+import 'package:sample_app/pages/notifcationspage.dart';
+import 'package:sample_app/pages/portfolio.dart';
+import 'package:sample_app/pages/profilepage.dart';
+import 'package:sample_app/pages/register.dart';
+import 'package:random_avatar/random_avatar.dart';
+import 'package:sample_app/pages/searchpage.dart';
+import 'package:sample_app/pages/stockpage.dart';
+import 'package:sample_app/pages/tradepage.dart';
 
+
+// remove this after debugging
 void main() async {
-  runApp(
-    ChangeNotifierProvider(create: (context) => TherepistProvider(),
+  await dotenv.load(fileName: ".env");
+  runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
     child: const MaterialApp(
-      home: MyHome(),
+      home: home(),
     ),
-    )
-  );
+  ));
 }
 
-class MyHome extends StatelessWidget {
-  const MyHome({super.key});
-  
+class home extends StatefulWidget {
+  const home({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(79, 200, 127, 1)),
-        fontFamily: 'Lexend',
-        useMaterial3: true,
-      ),
-      home: _home(),
-    );
+  State<home> createState() => _home();
+}
+
+class _home extends State<home> {
+  static TextStyle genText = TextStyle(fontFamily: 'Lexend');
+  String greeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning!';
+    }
+    if (hour < 17) {
+      return 'Good Afternoon!';
+    }
+    return 'Good Evening!';
   }
-}
 
-class _home extends StatefulWidget {
-  const _home({Key? key}) : super(key: key);
-  
+  int _currentpageindex = 0;
+  final StockService _stockService = StockService();
+  late Future<List<Stock>> _futureStocks;
+
   @override
-  State<_home> createState() => _homeState();
-}
+  void initState() {
+    super.initState();
+    _futureStocks = _stockService.fetchStocks([]);
+    //_futureStocks = _stockService.fetchStocks(['AMC', 'GME', 'TSLA', 'AMD']);
+    //TODO: how tf do you even get the ID?
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.fetchUserFromApi(); 
+  }
 
-class _homeState extends State<_home> {
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      home(),
+      searchpage(),
+      TradePage(),
+      portfoliopage(),
+      profilepage(),
+    ];
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        centerTitle: true,
-        title: Text('Hotel Management System'),
-        leading: IconButton(
-            icon: const Icon(Icons.menu),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('This is a snackbar')));
-            },
-          ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {}, 
-            icon: FaIcon(FontAwesomeIcons.bell))
-        ],
-      ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(50),
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Employees/Therapist Employed'),
-            SizedBox(height: 10),
-            FutureBuilder(future: Provider.of<TherepistProvider>(context, listen: false).getTherapists,
-            builder: ((context, snapshot) => 
-              snapshot.connectionState == ConnectionState.waiting ? Center(child: CircularProgressIndicator())
-              :
-            Consumer<TherepistProvider>(
-              child: Center(
-                heightFactor: MediaQuery.of(context).size.height * 0.03,
-                child: const Text('You have no employees.', style: TextStyle(fontSize: 18),),
-              ),
-              builder: ((context, TherepistProvider, child) => TherepistProvider.items.isEmpty
-              ? child as Widget
-              : Padding(
-                padding: const EdgeInsets.only(top:20),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: ListView.builder(
-                    itemCount: TherepistProvider.items.length,
-                    itemBuilder: (BuildContext context, int index) => Card(
-                      child: ListTile(
-                          tileColor: Colors.black12,
-                          title: Text(TherepistProvider.items[index]['name']),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(TherepistProvider.items[index]['occupation']),
-                              Text(TherepistProvider.items[index]['contact']),
-                              Text(TherepistProvider.items[index]['department']),
-                              ]),
-                          isThreeLine: true,
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min, 
-                            children: [
-                              IconButton(
-                              icon: Icon(Icons.delete, color: const Color.fromARGB(255, 77, 77, 77)),
-                              onPressed: ()  {
-                                deleteTherapist(TherepistProvider.items[index]['id'], context);
-                              }
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.edit, color: const Color.fromARGB(255, 77, 77, 77)),
-                              onPressed: ()  {
-                                showDialog(context: context, 
-                                builder: (BuildContext context) {
-                                  return updateTherapist(context, TherepistProvider.items[index]['id']);
-                                });
-                              }
-                            ),
-                          ]
-                          ) ,
-                          onTap: () {},
+      body: Container(
+        child: Column(
+          children: [
+            SizedBox(height: 50),
+            Row(
+              children: [
+                SizedBox(width: 50),
+                RandomAvatar(
+                  DateTime.now().toIso8601String(),
+                  height: 75,
+                  width: 75,
+                ),
+                SizedBox(width: 30),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.only(right: 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          greeting(),
+                          style: TextStyle(
+                            fontFamily: 'Lexend',
+                          ),
                         ),
-                      ),
+                        FutureBuilder<void>(
+                          future: Provider.of<UserProvider>(context, listen: false).fetchUserFromApi(), 
+                          builder: ((context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text("Error loading user data"),
+                              );
+                            } else {
+                              final userProvider = Provider.of<UserProvider>(context, listen: false);
+                              if (!userProvider.isUserLoaded) {
+                                return Center(
+                                  child: Text("No user data found"),
+                                );
+                              }
+                              return Text(
+                                  '${userProvider.user['First Name']} ${userProvider.user['Last Name']}',
+                                  style: TextStyle(
+                                    fontFamily: 'Lexend',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
+                              );
+                            }
+                          })),
+                    ],
                   )
                 ),
-                )))
-            )),
-            SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Builder(
-                      builder: (context) {
-                        return addtherapist(context);
-                      },
-                    );
-                  },
-                );
-                Provider.of<TherepistProvider>(context, listen: false).getTherapists;
-              },
-              icon: Icon(Icons.add),
-              label: Text('Add Employee/Therapist'),
+              ),
+                IconButton(
+                  color: Color.fromRGBO(79, 200, 127, 1),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const notificationpage()));
+                  }, 
+                  icon: 
+                  Badge(
+                    backgroundColor: Color.fromRGBO(0, 148, 116, 1),
+                    // TODO: change label color to green
+                    label: Text('2'), //TODO: Make this actual notification numbers
+                    child:(
+                      Icon(
+                        Icons.notification_add_outlined, 
+                        size: 30,
+                        )
+                    ),
+                  )
+                ),
+                SizedBox(width: 30),
+              ],
             ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: 50),
+                Row(
+                  children: [
+                    Expanded(child: Text('')),
+                    Text('Market Status Today', style: TextStyle(
+                      fontFamily: 'Lexend',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                    // TODO: change register here to actual update
+                    SizedBox(width: 100),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
+                      }, 
+                      child: Text('See All'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                        foregroundColor: Colors.black,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily:'Lexend',
+                        )
+                      ),
+                    ),
+                    Expanded(child: Text('')),
+                  ]
+                ),
+              ]
+            ),
+            Row(
+              textDirection: TextDirection.ltr,
+              children: [
+                SizedBox(width: 50),
+                Text('Stocks', 
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily:'Lexend',
+                  fontSize: 30,
+                )),
+              ]
+            ),
+            FutureBuilder<List<Stock>>(
+              future: _futureStocks, 
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No data available', style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily:'Lexend',
+                  fontSize: 20,
+                )));
+                }
+
+                final stocks = snapshot.data!;
+
+                return Expanded(
+                  child: ListView.builder(
+                  itemCount: stocks.length,
+                  itemBuilder: (context, index) {
+                    final stock = stocks[index];
+                    return Card(
+                      margin: EdgeInsets.only(left: 50, right: 50, bottom: 10, top: 30),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => StockDetailPage(stock: stock)));
+                          },
+                          leading: CircleAvatar(
+                            backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                            foregroundColor: Colors.black,
+                            child: Text(stock.symbol[0]),
+                          ),
+                          title: Text(stock.name, style: genText),
+                          subtitle: Text(stock.symbol, style: genText),
+                          trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                Text('\$${stock.price.toStringAsFixed(2)}', style: genText,),
+                                Text(
+                                  '${stock.changePercent.toStringAsFixed(2)}%',
+                                  style: TextStyle(
+                                    color: stock.change >= 0 ? Colors.green : Colors.red,
+                                  )
+                                )
+                              ]
+                            ),
+                        )
+                      );
+                    },
+                  )
+                );
+              }
+            )
           ],
-        ),
+        )
       ),
-    )
     );
   }
-} */
+}

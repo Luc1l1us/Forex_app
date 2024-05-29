@@ -21,6 +21,10 @@ __Setup venv (Linux)__
 
     `source ~/.venv/bin/activate`\
 
+__Install requirements__
+
+    `pip install -r requirements.txt`
+
 __Run Flask Server__
 
     `flask run --debug`

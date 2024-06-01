@@ -44,7 +44,7 @@ class _landingpage extends State<landingpage> {
       home(),
       searchpage(),
       TradePage(),
-      //portfoliopage(),
+      portfoliopage(),
       profilepage(),
     ];
     return Scaffold(
@@ -80,10 +80,10 @@ class _landingpage extends State<landingpage> {
             icon: Icon(Icons.handshake),
             label: 'Rate Exchange'
           ),
-          /* NavigationDestination(
+          NavigationDestination(
             icon: Icon(Icons.wallet),
             label: 'Portfolio'
-          ), */
+          ), 
           NavigationDestination(
             icon: Icon(Icons.person),
             label: 'Profile'

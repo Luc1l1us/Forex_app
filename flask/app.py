@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 firebase = firebase.FirebaseApplication(
-    "https://gen-lang-client-0909444084-default-rtdb.firebaseio.com", None
+    "https://gen-lang-client-0909444084-default-rtdb.firebaseio.com/", None
 )
 # cred = credentials.Certificate(
 #    "/home/dizzy/Downloads/gen-lang-client-0909444084-default-rtdb-export.json"

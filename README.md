@@ -1,4 +1,4 @@
-# sample_app
+# Forex_app
 An application that lets users track their total currency from a wide choices of cryptocurrency.
 
 # Tech Stack

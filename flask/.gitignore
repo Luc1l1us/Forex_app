@@ -12,8 +12,9 @@
 migrate_working_dir/
 .venv/
 
-# Ignore env 
+# Ignore env & credentials folder
 .env
+credentials/
 
 # IntelliJ related
 *.iml

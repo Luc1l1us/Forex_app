@@ -17,7 +17,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
-  runApp(ChangeNotifierProvider(create: (context) => UserProvider(),
+  runApp(ChangeNotifierProvider(
+    create: (context) => UserProvider(),
     child: const MaterialApp(
       home: MyApp(),
     ),
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Register',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 2, 243, 103)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 2, 243, 103)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -53,15 +55,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  //final _email = TextEditingController(text: "edziemarin@gmail.com");
-  //final _password = TextEditingController(text: "yikes101");
   bool _rememberMe = false;
 
   @override
-    void initState() {
-      super.initState();
-      _passwordVisible = false;
-      _loadSavedCredentials();
+  void initState() {
+    super.initState();
+    _passwordVisible = false;
+    _loadSavedCredentials();
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -87,131 +87,124 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
+        appBar: AppBar(
+          actions: <Widget>[
             IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              }, 
-              icon: Icon(Icons.arrow_back)
-            ),
-        ],
-      ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(100),
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Ready to Trade?', 
-            textScaler: TextScaler.linear(5),
-            style: TextStyle(fontFamily: 'Lexend'),
-            textAlign: TextAlign.justify,
-            ),            
-            SizedBox(height: 30),
-            TextFormField(
-              controller: _email,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email)
-              ),
-            ),
-            SizedBox(height: 10),
-            TextFormField(
-              controller: _password,
-              keyboardType: TextInputType.text,
-              obscureText: !_passwordVisible,
-              validator: (val) {
-                if (val!.isEmpty) {
-                  return 'Empty';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                prefixIcon: Icon(Icons.lock),
-                suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                      color: Color.fromRGBO(79, 200, 127, 1),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                )
-              ),
-            ),
-            SizedBox(height: 30),
-            RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Forgot Password?",
-                    style: 
-                      TextStyle(
-                        color:Color.fromRGBO(79, 200, 127, 1),
-                        fontFamily: 'Lexend'
-                      ),
-                    recognizer: TapGestureRecognizer()..onTap = () async {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const register_page()));
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back)),
+          ],
+        ),
+        body: Center(
+          child: Container(
+            padding: EdgeInsets.all(100),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Ready to Trade?',
+                  textScaler: TextScaler.linear(5),
+                  style: TextStyle(fontFamily: 'Lexend'),
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 30),
+                TextFormField(
+                  controller: _email,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email)),
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: _password,
+                  keyboardType: TextInputType.text,
+                  obscureText: !_passwordVisible,
+                  validator: (val) {
+                    if (val!.isEmpty) {
+                      return 'Empty';
                     }
-                  )
-                ]
-            )),
-            CheckboxListTile(
-              
-              checkColor: Colors.white,
-              title: Text('Remember Me'),
-              value: _rememberMe,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value!;
-                  _saveCredentials();
-                });
-              },
-            ),            
-            SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                  child: Divider()
-                  ),
-                Text('or'),
-                Expanded(
-                  child: Divider()
-                  ),
-              ]
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
-                foregroundColor: Colors.black,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily:'Lexend',
-                )
-              ),
-              onPressed: () {
-                // TODO: Get SHA1 footprint to use this
-                //logic here
-              },
-              icon: FaIcon(FontAwesomeIcons.google), 
-              label: Text('Sign in with Google'
-            )),
-            SizedBox(height: 30),
-            /*RichText(text: TextSpan(
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Color.fromRGBO(79, 200, 127, 1),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      )),
+                ),
+                SizedBox(height: 30),
+                RichText(
+                    textAlign: TextAlign.left,
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: "Forgot Password?",
+                          style: TextStyle(
+                              color: Color.fromRGBO(79, 200, 127, 1),
+                              fontFamily: 'Lexend'),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const register_page()));
+                            })
+                    ])),
+                CheckboxListTile(
+                  checkColor: Colors.white,
+                  title: Text('Remember Me'),
+                  value: _rememberMe,
+                  onChanged: (value) {
+                    setState(() {
+                      _rememberMe = value!;
+                      _saveCredentials();
+                    });
+                  },
+                ),
+                SizedBox(height: 30),
+                Row(children: [
+                  Expanded(child: Divider()),
+                  Text('or'),
+                  Expanded(child: Divider()),
+                ]),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
+                        foregroundColor: Colors.black,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Lexend',
+                        )),
+                    onPressed: () {
+                      // TODO: Get SHA1 footprint to use this
+                      //logic here
+                    },
+                    icon: FaIcon(FontAwesomeIcons.google),
+                    label: Text('Sign in with Google')),
+                SizedBox(height: 30),
+                /*RichText(text: TextSpan(
               children: [
                 TextSpan(
                   text: "Not yet Registered?  "
@@ -225,60 +218,58 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ]
             )),*/
-            SizedBox(height: 50),
-            Expanded(
-              child: Text('')
-              ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  RichText(
-                    text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "By continuing, I accept TradEase'\s ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily:'Lexend',
-                        )
-                      ),
-                      TextSpan(
-                        text: "Privacy Policy",
-                        style: TextStyle(color:Color.fromRGBO(79, 200, 127, 1)),
-                        recognizer: TapGestureRecognizer()..onTap = () async {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const privacy_policy()));
-                        }
-                      )
-                    ]
-                  )),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 200, vertical: 30),
-                      backgroundColor: const Color.fromRGBO(79, 200, 127, 1),
-                      foregroundColor: Colors.black,
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily:'Lexend',
-                      )
-                    ),
-                      onPressed: () {
-                        try {
-                          login(_password.text, _email.text, context);
-                        } catch (err) {
-                          throw Exception(err);
-                        }
-                      },
-                      child: Text('Continue')
-                    )
-                ],
-              )
-            )
-          ],
-        ),
-      ),
-    )
-    );
+                SizedBox(height: 50),
+                Expanded(child: Text('')),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      children: [
+                        RichText(
+                            text: TextSpan(children: [
+                          TextSpan(
+                              text: "By continuing, I accept TradEase'\s ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Lexend',
+                              )),
+                          TextSpan(
+                              text: "Privacy Policy",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(79, 200, 127, 1)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const privacy_policy()));
+                                })
+                        ])),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 200, vertical: 30),
+                                backgroundColor:
+                                    const Color.fromRGBO(79, 200, 127, 1),
+                                foregroundColor: Colors.black,
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Lexend',
+                                )),
+                            onPressed: () {
+                              try {
+                                login(_password.text, _email.text, context);
+                              } catch (err) {
+                                throw Exception(err);
+                              }
+                            },
+                            child: Text('Continue'))
+                      ],
+                    ))
+              ],
+            ),
+          ),
+        ));
   }
 }

@@ -13,9 +13,6 @@ load_dotenv()
 firebase = firebase.FirebaseApplication(
     os.getenv("DATABASE_URL"), None
 )
-# cred = credentials.Certificate(
-#    "/home/dizzy/Downloads/gen-lang-client-0909444084-default-rtdb-export.json"
-# )  # Linux
 cred = credentials.Certificate(os.getenv("CRED_CERTIFICATE")) #Windows
 firebase_admin.initialize_app(
     cred,

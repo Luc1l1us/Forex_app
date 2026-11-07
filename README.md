@@ -25,7 +25,7 @@ An application that lets users track their total currency from a wide choices of
     TwelveData API
 ```
 
-## 📸 Interface Preview
+# Interface Preview
 
 | Dashboard & Conversion          | Trend Graph & Analysis      |
 | ------------------------------- | --------------------------- |
